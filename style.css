@@ -9,7 +9,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  /*height: 100vh;*/
   margin: 0;
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
@@ -47,7 +47,7 @@ nav a {
 
 /* Add wide margins to the centered container */
 .centered-container {
-  max-width: 800px; /* Adjust the maximum width as needed */
+  max-width: 1000px; /* Adjust the maximum width as needed */
   padding: 20px;
   margin: 20px; /* Adjust the margin size to create wide margins */
   background-color: #fff;
