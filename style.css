@@ -1,105 +1,100 @@
 /* Reset some default styles */
-body, h1, h2, p {
+body, h1, h2, h3, p, ul, li {
   margin: 0;
   padding: 0;
 }
 
-/* Body Styles */
+/* Center align the entire content */
 body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
-  color: #333;
-  line-height: 1.6;
-  margin: 0;
-  padding: 0;
+}
+
+/* Container for sections */
+.centered-container {
+  max-width: 800px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 /* Header Styles */
-header {
-  background-color: #007ACC;
-  color: #fff;
-  text-align: center;
-  padding: 2rem 0;
-}
-
-header h1 {
+.centered-container h1 {
   font-size: 2.5rem;
+  margin-bottom: 10px;
 }
 
-/* Navigation Styles */
-nav {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 1rem 0;
-}
-
-nav a {
-  color: #fff;
-  text-decoration: none;
-  margin: 0 1rem;
+.centered-container p {
   font-size: 1.2rem;
+  margin-bottom: 20px;
 }
 
-/* Main Content Styles */
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Biosketch Section Styles */
+.biosketch img {
+  max-width: 100%;
+  border-radius: 50%;
+  margin-bottom: 20px;
 }
 
-/* Intro Section Styles */
-.intro {
+.biosketch ul {
+  list-style: none;
+  padding: 0;
+}
+
+.biosketch ul li {
+  display: inline;
+  margin-right: 10px;
+}
+
+/* Publications Section Styles */
+.publications h2 {
+  font-size: 1.8rem;
+  margin-top: 20px;
+}
+
+.publications ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.publications li {
   text-align: left;
-  margin-bottom: 2rem;
+  margin-bottom: 20px;
 }
 
-/* Resume Section Styles */
-.resume {
+.publications h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+/* News Section Styles */
+.news h2 {
+  font-size: 1.8rem;
+  margin-top: 20px;
+}
+
+.news ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.news li {
   text-align: left;
+  margin-bottom: 10px;
 }
 
-.resume h2 {
-  font-size: 1.5rem;
-  margin-top: 1rem;
+/* Links Styles */
+a {
+  text-decoration: none;
+  color: #007ACC;
 }
 
-.resume p {
-  margin: 0.5rem 0;
+a:hover {
+  text-decoration: underline;
 }
-
-/* Footer Styles */
-footer {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 1rem 0;
-}
-
-/* Media Queries for Responsiveness */
-@media (max-width: 768px) {
-  header h1 {
-    font-size: 2rem;
-  }
-  nav a {
-    font-size: 1rem;
-  }
-  .container {
-    padding: 1rem;
-  }
-}
-
-@media (max-width: 576px) {
-  header h1 {
-    font-size: 1.5rem;
-  }
-  nav a {
-    font-size: 0.9rem;
-  }
-  .container {
-    padding: 0.5rem;
-  }
-}
-
