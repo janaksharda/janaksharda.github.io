@@ -43,9 +43,10 @@ body {
 }
 
 .biosketch img {
-  max-width: 200px; /* Set the maximum width */
+  max-width: 100%; /* Make the image responsive by scaling to fit its container */
   height: auto; /* Allow the height to adjust proportionally */
   margin-right: 20px; /* Add space between image and text */
+  max-height: 200px; /* Limit the image height on larger screens */
 }
 
 .biosketch ul {
@@ -83,3 +84,12 @@ body {
 
 /* Links Styles */
 /* ... (Rest of your CSS code) ... */
+/* Media Query for Responsiveness */
+@media (max-width: 768px) {
+  .biosketch img {
+    max-height: 150px; /* Adjust the image height for smaller screens */
+  }
+  .centered-container p {
+    font-size: 1rem; /* Decrease font size for smaller screens */
+  }
+}
