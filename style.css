@@ -14,44 +14,14 @@ body {
   background-color: #f0f0f0;
 }
 
-/* Header Styles */
-header {
-  background-color: #007ACC;
-  color: #fff;
-  text-align: center;
-  padding: 2rem 0;
-}
-
-header h1 {
-  font-size: 2.5rem;
-}
-
-/* Navigation Styles */
-nav {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 1rem 0;
-}
-
-nav a {
-  color: #fff;
-  text-decoration: none;
-  margin: 0 1rem;
-  font-size: 1.2rem;
-}
-
-
-
-
 /* Add wide margins to the centered container */
 .centered-container {
-  max-width: 1300px; /* Adjust the maximum width as needed */
+  max-width: 1000px; /* Adjust the maximum width as needed */
   padding: 20px;
   margin: 20px; /* Adjust the margin size to create wide margins */
   background-color: #fff;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  text-align: left; /* Align text to the left */
 }
 
 /* Header Styles */
@@ -65,12 +35,17 @@ nav a {
   margin-bottom: 20px;
 }
 
-
-/* Intro Section Styles */
 /* Biosketch Section Styles */
+.biosketch {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .biosketch img {
-  max-width: 200px; /* Set the maximum width */
+  max-width: 300px; /* Set the maximum width */
   height: auto; /* Allow the height to adjust proportionally */
+  margin-right: 20px; /* Add space between image and text */
 }
 
 .biosketch ul {
@@ -84,82 +59,10 @@ nav a {
 }
 
 /* Publications Section Styles */
-.publications h2 {
-  font-size: 1.8rem;
-  margin-top: 20px;
-}
-
-.publications ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.publications li {
-  text-align: left;
-  margin-bottom: 20px;
-}
-
-.publications h3 {
-  font-size: 1.4rem;
-  margin-bottom: 10px;
-}
+/* ... (Rest of your CSS code) ... */
 
 /* News Section Styles */
-.news h2 {
-  font-size: 1.8rem;
-  margin-top: 20px;
-}
-
-.news ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.news li {
-  text-align: left;
-  margin-bottom: 10px;
-}
+/* ... (Rest of your CSS code) ... */
 
 /* Links Styles */
-a {
-  text-decoration: none;
-  color: #007ACC;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* Footer Styles */
-footer {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 1rem 0;
-}
-
-/* Media Queries for Responsiveness */
-@media (max-width: 768px) {
-  header h1 {
-    font-size: 2rem;
-  }
-  nav a {
-    font-size: 1rem;
-  }
-  .container {
-    padding: 1rem;
-  }
-}
-
-@media (max-width: 576px) {
-  header h1 {
-    font-size: 1.5rem;
-  }
-  nav a {
-    font-size: 0.9rem;
-  }
-  .container {
-    padding: 0.5rem;
-  }
-}
-
+/* ... (Rest of your CSS code) ... */
