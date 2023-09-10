@@ -57,6 +57,7 @@ body {
   display: inline;
   margin-right: 10px;
 }
+
 .links {
   margin-top: 20px; /* Add space between biosketch and links */
 }
@@ -69,6 +70,7 @@ body {
 .links ul li {
   margin-bottom: 10px;
 }
+
 /* Publications Section Styles */
 /* ... (Rest of your CSS code) ... */
 
