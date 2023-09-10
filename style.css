@@ -58,17 +58,21 @@ body {
   margin-right: 10px;
 }
 
-.links {
-  margin-top: 20px; /* Add space between biosketch and links */
-}
-
 .links ul {
   list-style: none;
   padding: 0;
+  display: flex; /* Create a horizontal layout */
+  flex-wrap: wrap; /* Allow wrapping links if they exceed the width */
 }
 
 .links ul li {
-  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+/* Individual link style */
+.links a {
+  text-decoration: none;
+  color: #007ACC;
 }
 
 /* Publications Section Styles */
