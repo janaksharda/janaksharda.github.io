@@ -38,6 +38,7 @@ body {
 /* Biosketch Section Styles */
 .biosketch {
   display: flex;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
   align-items: center;
   margin-bottom: 20px;
 }
