@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Janak Sharda — Advanced packaging analysis and modeling</title>
+<meta name="description" content="Package design at Apple. Ph.D. from Georgia Tech in electrical-thermal co-design and system-level analysis of advanced packaging: 2.5D/3D integration, power delivery, co-packaged optics, and thermal evaluation of machine learning accelerators." />
+<meta property="og:title" content="Janak Sharda" />
+<meta property="og:description" content="Electrical-thermal co-design and system-level analysis of advanced packaging." />
+<meta property="og:type" content="profile" />
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"Person",
+  "name":"Janak Sharda",
+  "jobTitle":"Package Design, Apple",
+  "email":"mailto:shardajanak@gmail.com",
+  "worksFor":{"@type":"Organization","name":"Apple"},
+  "alumniOf":[
+    {"@type":"CollegeOrUniversity","name":"Georgia Institute of Technology"},
+    {"@type":"CollegeOrUniversity","name":"Indian Institute of Technology Delhi"}
+  ],
+  "knowsAbout":["Advanced packaging","2.5D and 3D integration","Power delivery network analysis","Co-packaged optics","Thermal analysis","System-technology co-optimization","Compute-in-memory"],
+  "sameAs":[
+    "https://scholar.google.com/citations?user=1uoFY1QAAAAJ&hl=en",
+    "https://www.linkedin.com/in/janak-sharda/"
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=Source+Sans+3:ital,wght@0,400;0,600;1,400&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFFFFF;
+  --paper-2:#F7F7F5;
+  --ink:#14181A;
+  --ink-2:#39413F;
+  --muted:#6E7674;
+  --accent:#1F5145;
+  --line:#DFE1DD;
+  --line-2:#ECEDEA;
+  --serif:"Source Serif 4",Georgia,serif;
+  --sans:"Source Sans 3",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --wrap:960px;
+  --label:180px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:17px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent)}
+a:hover{color:var(--ink)}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 32px}
+
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.012em;line-height:1.15;margin:0}
+h2{font-size:23px}
+h3{font-size:17.5px}
+p{margin:0 0 14px}
+
+.label{
+  font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--muted);
+}
+
+/* ---------- masthead ---------- */
+.masthead{border-bottom:2px solid var(--ink);padding:44px 0 22px}
+.masthead h1{font-size:38px;letter-spacing:-.02em}
+.masthead .role{font-family:var(--serif);font-size:19px;color:var(--ink-2);margin:8px 0 0}
+.masthead .role span{color:var(--muted);font-size:17px;display:block;margin-top:2px}
+.masthead .meta{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin:14px 0 0;line-height:1.9}
+.masthead .meta a{text-decoration:none;border-bottom:1px solid var(--line)}
+.masthead .meta a:hover{border-bottom-color:var(--accent)}
+.masthead .sep{color:var(--line);margin:0 10px}
+
+nav.sections{
+  border-bottom:1px solid var(--line);padding:12px 0;position:sticky;top:0;
+  background:rgba(255,255,255,.94);backdrop-filter:blur(6px);z-index:10;
+}
+nav.sections ul{list-style:none;display:flex;gap:26px;flex-wrap:wrap;margin:0;padding:0;
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+nav.sections a{color:var(--muted);text-decoration:none}
+nav.sections a:hover{color:var(--accent)}
+
+/* ---------- sections ---------- */
+section{padding:52px 0;border-bottom:1px solid var(--line-2)}
+.row{display:grid;grid-template-columns:var(--label) 1fr;gap:36px;align-items:start}
+.row + .row{margin-top:34px;padding-top:34px;border-top:1px solid var(--line-2)}
+.sec-title{margin-bottom:32px}
+
+.summary p{max-width:70ch;color:var(--ink-2)}
+.summary p:last-child{margin-bottom:0}
+
+/* ---------- figure ---------- */
+figure.fig{margin:0 0 42px;padding:22px 20px 18px;background:var(--paper-2);border:1px solid var(--line)}
+figure.fig svg{display:block;width:100%;height:auto}
+figure.fig figcaption{font-family:var(--sans);font-size:13.5px;color:var(--muted);
+  margin-top:14px;padding-top:12px;border-top:1px solid var(--line);max-width:78ch}
+figure.fig figcaption b{font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-2);font-weight:500;margin-right:8px}
+
+/* ---------- interactive layers ---------- */
+.layer{cursor:pointer}
+.layer .hit{fill:transparent}
+.layer .outline{fill:none;stroke:none}
+.layer .content{transition:opacity .18s ease}
+#xsec.has-sel .layer:not(.on) .content{opacity:.26}
+.layer.on .outline{stroke:var(--accent);stroke-width:1.4;stroke-dasharray:4 3}
+.layer.on text{fill:var(--ink)}
+.layer:hover .outline{stroke:var(--line);stroke-width:1.4}
+.layer:focus{outline:none}
+.layer:focus-visible .outline{stroke:var(--accent);stroke-width:2;stroke-dasharray:none}
+
+.picker{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.chip{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--ink-2);
+  text-decoration:none;padding:6px 11px;border:1px solid var(--line);background:#fff;
+  transition:border-color .15s,color .15s
+}
+.chip:hover{border-color:var(--muted);color:var(--ink)}
+.chip[aria-current="true"]{border-color:var(--accent);color:var(--accent);background:#F2F6F4}
+
+.readout{margin-top:18px}
+.readout .rk{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 6px}
+.readout h3{font-size:18px;margin:0 0 8px}
+.readout p{font-size:16px;color:var(--ink-2);max-width:74ch;margin:0}
+.rfacts{display:flex;flex-wrap:wrap;gap:0 30px;margin:14px 0 0;font-family:var(--mono);font-size:12.5px}
+.rfacts div{display:flex;flex-direction:column;gap:2px;padding:8px 0;min-width:140px}
+.rfacts dt{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.rfacts dd{margin:0;color:var(--ink);font-weight:500}
+.rmore{margin:12px 0 0}
+.rmore a{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;text-decoration:none;border-bottom:1px solid var(--line)}
+.rmore a:hover{border-bottom-color:var(--accent)}
+.rmore a[hidden]{display:none}
+
+/* ---------- research ---------- */
+.res h3{margin-bottom:4px}
+.res .tags{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);margin:0 0 12px}
+.res p{color:var(--ink-2);max-width:72ch;font-size:16.5px}
+.res p:last-child{margin-bottom:0}
+.res .cite{font-size:14px;color:var(--muted);font-style:italic}
+
+/* ---------- experience ---------- */
+.when{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.7}
+.when .org{display:block;color:var(--ink-2);margin-top:4px}
+.entry h3{font-size:18px}
+.entry .place{font-size:14.5px;color:var(--muted);margin:3px 0 12px;font-style:italic}
+.entry ul{margin:0;padding-left:19px;color:var(--ink-2);font-size:16.5px}
+.entry li{margin-bottom:6px;padding-left:2px}
+.entry li::marker{color:var(--muted)}
+
+/* ---------- publications ---------- */
+.pubgroup{margin-bottom:30px}
+.pubgroup > h3{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);padding-bottom:9px;border-bottom:1px solid var(--ink);margin-bottom:4px}
+ol.pubs{list-style:none;counter-reset:p;margin:0;padding:0}
+ol.pubs li{counter-increment:p;display:grid;grid-template-columns:34px 1fr;gap:12px;
+  padding:13px 0;border-bottom:1px solid var(--line-2);font-size:15.5px;line-height:1.5;color:var(--ink-2)}
+ol.pubs li::before{content:"[" counter(p) "]";font-family:var(--mono);font-size:12px;color:var(--muted);padding-top:2px}
+ol.pubs .me{color:var(--ink);font-weight:600}
+ol.pubs em{font-style:normal;color:var(--ink);font-weight:600}
+ol.pubs .tag{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.03em}
+.note{font-size:13.5px;color:var(--muted);margin-top:16px}
+
+/* ---------- lists ---------- */
+dl.kv{margin:0}
+dl.kv dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);padding-bottom:7px;border-bottom:1px solid var(--line);margin-bottom:10px}
+dl.kv dd{margin:0 0 22px;font-size:16px;color:var(--ink-2)}
+dl.kv dd:last-child{margin-bottom:0}
+.cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:36px}
+ul.plain{list-style:none;margin:0;padding:0;font-size:16px;color:var(--ink-2)}
+ul.plain li{padding:3px 0}
+ul.bul{margin:0;padding-left:19px;color:var(--ink-2);font-size:16.5px}
+ul.bul li{margin-bottom:7px}
+ul.bul li::marker{color:var(--muted)}
+
+/* ---------- contact ---------- */
+footer{padding:52px 0 64px}
+footer p{max-width:62ch;color:var(--ink-2)}
+footer .links{font-family:var(--mono);font-size:13px;line-height:2.1;margin-top:8px}
+footer .links a{text-decoration:none;border-bottom:1px solid var(--line)}
+footer .links a:hover{border-bottom-color:var(--accent)}
+footer .colophon{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+.skip{position:absolute;left:-9999px;background:var(--ink);color:#fff;padding:10px 16px;font-family:var(--mono);font-size:13px;z-index:50}
+.skip:focus{left:12px;top:12px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+@media (max-width:820px){
+  body{font-size:16.5px}
+  .wrap{padding:0 22px}
+  .row,.cols{grid-template-columns:1fr;gap:14px}
+  .row + .row{margin-top:28px;padding-top:28px}
+  section{padding:40px 0}
+  .masthead h1{font-size:31px}
+  nav.sections{position:static}
+  nav.sections ul{gap:16px}
+  ol.pubs li{grid-template-columns:26px 1fr;gap:8px;font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important}
+  html{scroll-behavior:auto}
+}
+@media print{
+  nav.sections,.picker,.readout{display:none}
+  body{font-size:11pt}
+  section{page-break-inside:avoid;border-bottom:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <h1>Janak Sharda</h1>
+    <p class="role">Package Design, Apple<span>Ph.D., Electrical and Computer Engineering, Georgia Institute of Technology</span></p>
+    <p class="meta">
+      <a href="mailto:shardajanak@gmail.com">shardajanak@gmail.com</a><br>
+      <a href="https://scholar.google.com/citations?user=1uoFY1QAAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a><span class="sep">·</span><a href="https://www.linkedin.com/in/janak-sharda/" target="_blank" rel="noopener">LinkedIn</a><span class="sep">·</span><a href="https://github.com/YOUR_HANDLE" target="_blank" rel="noopener">GitHub</a><span class="sep">·</span><a href="Janak_Sharda_CV.pdf">Curriculum vitae (PDF)</a>
+    </p>
+  </div>
+</header>
+
+<nav class="sections" aria-label="Sections">
+  <div class="wrap">
+    <ul>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#publications">Publications</a></li>
+      <li><a href="#background">Background</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- ============ SUMMARY ============ -->
+<section class="summary">
+  <div class="wrap">
+    <div class="row">
+      <p class="label" style="margin:4px 0 0">Overview</p>
+      <div>
+        <p>I work on the package design team at Apple in Cupertino. I completed my Ph.D. at Georgia Tech in 2026, advised by Prof. Shimeng Yu, on electrical–thermal co-design and system-level analysis of advanced packaging for hardware accelerators and sensor technologies, and my B.Tech. in Electrical Engineering at IIT Delhi in 2021.</p>
+        <p>Package design and automation at Apple: constraint-driven placement for packages carrying several hundred components. System-level modeling for advanced packages: 2.5D and 3D integration, power delivery, thermal analysis, and co-packaged optics, combining architecture-level performance modeling, package-level electrical analysis, and finite-element thermal simulation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESEARCH ============ -->
+<section id="research">
+  <div class="wrap">
+    <h2 class="sec-title">Research</h2>
+
+    <figure class="fig">
+      <svg id="xsec" viewBox="0 0 780 440" xmlns="http://www.w3.org/2000/svg"
+           aria-label="Interactive cross-section of a 3D-integrated package. Selecting a layer describes the corresponding analysis.">
+        <defs>
+          <pattern id="hatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="0" y2="7" stroke="#FFFFFF" stroke-width="1.4" opacity=".45"/>
+          </pattern>
+        </defs>
+        <g font-family="IBM Plex Mono, monospace" font-size="13" fill="#6E7674">
+
+          <!-- lid + TIM -->
+          <g class="layer" data-key="thermal" tabindex="0" role="button" aria-label="Heat spreader and thermal interface material">
+            <g class="content">
+              <rect x="80" y="52" width="440" height="22" fill="#6B7370"/>
+              <rect x="80" y="52" width="440" height="22" fill="url(#hatch)"/>
+              <rect x="80" y="74" width="440" height="6" fill="#9A7B3C" opacity=".8"/>
+              <line x1="520" y1="63" x2="552" y2="63" stroke="#C6C9C4"/>
+              <text x="560" y="60">Integrated heat spreader</text>
+              <text x="560" y="78">Thermal interface material</text>
+            </g>
+            <rect class="outline" x="76" y="48" width="448" height="36"/>
+            <rect class="hit" x="76" y="44" width="700" height="42"/>
+          </g>
+
+          <!-- 3D DRAM -->
+          <g class="layer" data-key="dram" tabindex="0" role="button" aria-label="Three-dimensional stacked DRAM">
+            <g class="content">
+              <rect x="250" y="98"  width="190" height="18" fill="#46707A"/>
+              <rect x="250" y="120" width="190" height="18" fill="#46707A"/>
+              <rect x="250" y="142" width="190" height="18" fill="#46707A"/>
+              <rect x="250" y="164" width="190" height="18" fill="#46707A"/>
+              <path d="M282 98 v84 M314 98 v84 M346 98 v84 M378 98 v84 M410 98 v84" stroke="#F7F7F5" stroke-width="2"/>
+              <line x1="440" y1="140" x2="552" y2="140" stroke="#C6C9C4"/>
+              <text x="560" y="136">3D stacked DRAM / HBM</text>
+              <text x="560" y="154">Through-silicon vias</text>
+            </g>
+            <rect class="outline" x="246" y="94" width="198" height="92"/>
+            <rect class="hit" x="246" y="94" width="530" height="92"/>
+          </g>
+
+          <!-- logic die -->
+          <g class="layer" data-key="logic" tabindex="0" role="button" aria-label="Logic die and accelerator datapath">
+            <g class="content">
+              <rect x="250" y="186" width="190" height="44" fill="#1F5145"/>
+              <g fill="#F7F7F5" opacity=".22">
+                <rect x="260" y="196" width="40" height="24"/><rect x="306" y="196" width="40" height="24"/>
+                <rect x="352" y="196" width="40" height="24"/><rect x="398" y="196" width="32" height="24"/>
+              </g>
+              <g fill="#9A7B3C"><circle cx="264" cy="232" r="4"/><circle cx="296" cy="232" r="4"/><circle cx="328" cy="232" r="4"/><circle cx="360" cy="232" r="4"/><circle cx="392" cy="232" r="4"/><circle cx="424" cy="232" r="4"/></g>
+              <line x1="440" y1="208" x2="552" y2="208" stroke="#C6C9C4"/>
+              <text x="560" y="204">Logic die</text>
+              <text x="560" y="222">Micro-bumps</text>
+            </g>
+            <rect class="outline" x="246" y="182" width="198" height="56"/>
+            <rect class="hit" x="246" y="186" width="530" height="52"/>
+          </g>
+
+          <!-- optical engine -->
+          <g class="layer" data-key="optics" tabindex="0" role="button" aria-label="Co-packaged optical engine">
+            <g class="content">
+              <rect x="110" y="190" width="100" height="40" fill="#9A7B3C"/>
+              <g fill="#F7F7F5" opacity=".4"><rect x="120" y="202" width="24" height="16"/><rect x="150" y="202" width="24" height="16"/><rect x="180" y="202" width="20" height="16"/></g>
+              <path d="M110 204 C 76 204, 62 186, 26 182" stroke="#9A7B3C" stroke-width="3" fill="none"/>
+              <path d="M110 216 C 76 216, 62 234, 26 238" stroke="#9A7B3C" stroke-width="3" fill="none"/>
+              <line x1="160" y1="190" x2="160" y2="166" stroke="#C6C9C4"/>
+              <text x="112" y="160">Co-packaged optical engine</text>
+              <text x="14" y="262">Fiber</text>
+            </g>
+            <rect class="outline" x="106" y="186" width="108" height="48"/>
+            <rect class="hit" x="20" y="152" width="200" height="96"/>
+          </g>
+
+          <!-- interposer -->
+          <g class="layer" data-key="interposer" tabindex="0" role="button" aria-label="Silicon interposer">
+            <g class="content">
+              <rect x="90" y="238" width="400" height="26" fill="#8D9691"/>
+              <path d="M150 238 v26 M210 238 v26 M270 238 v26 M330 238 v26 M390 238 v26 M450 238 v26" stroke="#F7F7F5" stroke-width="1.6" opacity=".7"/>
+              <g fill="#9A7B3C"><circle cx="120" cy="272" r="5.5"/><circle cx="180" cy="272" r="5.5"/><circle cx="240" cy="272" r="5.5"/><circle cx="300" cy="272" r="5.5"/><circle cx="360" cy="272" r="5.5"/><circle cx="420" cy="272" r="5.5"/><circle cx="470" cy="272" r="5.5"/></g>
+              <line x1="490" y1="251" x2="552" y2="251" stroke="#C6C9C4"/>
+              <text x="560" y="247">Silicon interposer</text>
+              <text x="560" y="265">C4 bumps</text>
+            </g>
+            <rect class="outline" x="86" y="234" width="408" height="46"/>
+            <rect class="hit" x="86" y="238" width="690" height="42"/>
+          </g>
+
+          <!-- substrate -->
+          <g class="layer" data-key="substrate" tabindex="0" role="button" aria-label="Package substrate">
+            <g class="content">
+              <rect x="50" y="282" width="470" height="40" fill="#23443A"/>
+              <path d="M70 292 H 500 M70 302 H 470 M100 312 H 500" stroke="#9A7B3C" stroke-width="1.3" opacity=".55"/>
+              <g fill="#9A7B3C" opacity=".8"><rect x="60" y="288" width="22" height="8"/><rect x="60" y="306" width="14" height="8"/><rect x="492" y="288" width="20" height="8"/><rect x="486" y="306" width="26" height="8"/></g>
+              <line x1="520" y1="296" x2="552" y2="296" stroke="#C6C9C4"/>
+              <text x="560" y="292">Package substrate</text>
+              <text x="560" y="310">Build-up routing layers</text>
+            </g>
+            <rect class="outline" x="46" y="278" width="478" height="46"/>
+            <rect class="hit" x="46" y="278" width="730" height="44"/>
+          </g>
+
+          <!-- power delivery -->
+          <g class="layer" data-key="power" tabindex="0" role="button" aria-label="Power delivery network">
+            <g class="content">
+              <path d="M296 322 v-88 M356 322 v-88 M416 322 v-88" stroke="#8C4A46" stroke-width="2.4"
+                    stroke-dasharray="6 5" opacity=".85"/>
+              <path d="M296 234 l-4 7 h8 z M356 234 l-4 7 h8 z M416 234 l-4 7 h8 z" fill="#8C4A46"/>
+              <g fill="#9A7B3C"><circle cx="80" cy="334" r="9"/><circle cx="140" cy="334" r="9"/><circle cx="200" cy="334" r="9"/><circle cx="260" cy="334" r="9"/><circle cx="320" cy="334" r="9"/><circle cx="380" cy="334" r="9"/><circle cx="440" cy="334" r="9"/><circle cx="500" cy="334" r="9"/></g>
+              <g fill="#3A3F3E"><rect x="97" y="327" width="26" height="14"/><rect x="217" y="327" width="26" height="14"/><rect x="337" y="327" width="26" height="14"/><rect x="457" y="327" width="26" height="14"/></g>
+              <path d="M110 341 v47 h12" stroke="#C6C9C4" fill="none"/>
+              <text x="128" y="392">Land-side decoupling capacitors</text>
+              <text x="128" y="410">BGA solder balls</text>
+              <text x="540" y="392">Current path to logic die</text>
+              <path d="M470 386 h60" stroke="#8C4A46" stroke-width="2.4" stroke-dasharray="6 5"/>
+            </g>
+            <rect class="outline" x="46" y="322" width="478" height="30"/>
+            <rect class="hit" x="40" y="322" width="736" height="100"/>
+          </g>
+
+          <line x1="30" y1="352" x2="530" y2="352" stroke="#14181A" stroke-width="1.4" opacity=".4"/>
+          <text x="30" y="374">SYSTEM BOARD</text>
+        </g>
+      </svg>
+
+      <figcaption><b>Figure 1</b>Cross-section of a 3D-integrated accelerator package, not to scale. Select a layer for the corresponding analysis.</figcaption>
+
+      <div class="picker">
+        <a class="chip" href="#r-interposer" data-key="interposer">Interposer</a>
+        <a class="chip" href="#r-logic" data-key="logic">Logic die</a>
+        <a class="chip" href="#r-logic" data-key="dram">3D DRAM</a>
+        <a class="chip" href="#r-optics" data-key="optics">Optical I/O</a>
+        <a class="chip" href="#r-thermal" data-key="thermal">Thermal path</a>
+        <a class="chip" href="#r-power" data-key="power">Power delivery</a>
+        <a class="chip" href="#r-substrate" data-key="substrate">Substrate</a>
+      </div>
+
+      <div class="readout" id="readout" aria-live="polite">
+        <p class="rk" id="rKicker">Overview</p>
+        <h3 id="rTitle">Seven layers, seven sets of constraints</h3>
+        <p id="rBody">Each layer of the package constrains the system differently: routing and placement at the substrate, impedance and IR drop along the power delivery path, partitioning and bandwidth at the interposer, energy per bit at the optical interface, and heat removal through the lid. The analysis is mostly about quantifying these effects together, since a change at one layer usually shows up as a limit at another.</p>
+        <dl class="rfacts" id="rFacts"></dl>
+        <p class="rmore"><a id="rLink" href="#research" hidden>Read the full description below</a></p>
+      </div>
+    </figure>
+
+    <div class="row res" id="r-power">
+      <p class="label" style="margin:4px 0 0">Power and thermal</p>
+      <div>
+        <h3>Power delivery and thermal management in 3D stacked systems</h3>
+        <p class="tags">PDN efficiency · IR drop · peak temperature · 3D stacked HBM</p>
+        <p>Stacking memory above compute puts the power delivery path and the heat removal path in competition for the same vertical resources. I studied 3D stacked HBM with compute accelerators for LLMs, quantifying delivery efficiency and IR drop through the substrate, interposer, and vias alongside the peak temperature the stack reaches, and identifying the configurations where both stay within limits. Related work with collaborators examines voltage regulators embedded directly into a glass substrate, which moves the regulation stage closer to the load.</p>
+        <p class="cite">IEEE JXCDC, vol. 11, pp. 116–122, 2025; ECTC 2026.</p>
+      </div>
+    </div>
+
+    <div class="row res" id="r-interposer">
+      <p class="label" style="margin:4px 0 0">Packaging co-optimization</p>
+      <div>
+        <h3>System-technology co-optimization across packaging schemes</h3>
+        <p class="tags">2.5D / 3D integration · design-space exploration · STCO</p>
+        <p>How an accelerator is partitioned across dies fixes the bandwidth, parasitics, and area available to it, so the packaging scheme cannot sensibly be chosen after the architecture. This methodology evaluates 2.5D and 3D options, propagates the resulting package-level quantities into system power, performance, and area, and pairs the model with an optimizer that returns the best dataflow for a given architecture and set of hardware constraints. Applied to Llama 2-13B across several package configurations.</p>
+        <p class="cite">IEEE JETCAS, vol. 15, no. 4, pp. 577–584, 2025. Extended during an internship at Intel.</p>
+      </div>
+    </div>
+
+    <div class="row res" id="r-logic">
+      <p class="label" style="margin:4px 0 0">Memory and datapath</p>
+      <div>
+        <h3>Evaluating 3D stacked DRAM for transformer inference</h3>
+        <p class="tags">3D stackable DRAM · heterogeneous integration · MoE serving</p>
+        <p>Transformer inference is usually limited by memory bandwidth rather than arithmetic, which makes the placement of memory a system-level question rather than a component choice. I modeled accelerators with 3D stackable and capacitorless DRAM integrated over the logic die and compared them against off-package alternatives on energy, area, and achievable throughput. The same modeling supported collaborative work on mixture-of-experts serving, where expert loading from DRAM dominates both energy and bandwidth.</p>
+        <p class="cite">AICAS 2024; IEEE Nanotechnology Magazine, vol. 19, no. 2, 2025; MICRO 2025; IEEE JXCDC, accepted.</p>
+      </div>
+    </div>
+
+    <div class="row res" id="r-optics">
+      <p class="label" style="margin:4px 0 0">Optical interconnect</p>
+      <div>
+        <h3>Assessing co-packaged optics at cluster scale</h3>
+        <p class="tags">co-packaged optics · escape routing · cluster modeling</p>
+        <p>Electrical interconnects limit reach and energy per bit as accelerator counts grow, and moving the optical engine into the package addresses both at the cost of additional escape routing and thermal coupling. I extended the accelerator model to a large-scale cluster with co-packaged optical interconnects and evaluated whether the configuration holds up for training a one-trillion-parameter model, accounting for those package-level costs rather than assuming an ideal link.</p>
+        <p class="cite">IEEE T-CPMT, vol. 15, no. 11, pp. 2282–2289, 2025.</p>
+      </div>
+    </div>
+
+    <div class="row res" id="r-thermal">
+      <p class="label" style="margin:4px 0 0">Thermal analysis</p>
+      <div>
+        <h3>Thermally constrained operating points for heterogeneous 3D systems</h3>
+        <p class="tags">finite-element analysis · compute-in-memory · RISC-V · mixed workloads</p>
+        <p>Power dissipated anywhere in a stack leaves through a single thermal path, so peak temperature bounds what the rest of the design can do. I modeled complete stacks in ANSYS Mechanical to extract peak temperature, and contributed to a framework that selects per-block operating points and air-cooling configuration for a heterogeneous accelerator of compute-in-memory macros, a digital ML accelerator, and RISC-V cores, optimizing power and latency subject to a temperature limit under mixed ML and non-ML workloads.</p>
+        <p class="cite">IEEE T-VLSI, vol. 32, no. 9, pp. 1718–1725, 2024.</p>
+      </div>
+    </div>
+
+    <div class="row res" id="r-substrate">
+      <p class="label" style="margin:4px 0 0">Design automation</p>
+      <div>
+        <h3>Encoding electrical constraints into placement</h3>
+        <p class="tags">CAD automation · constraint-driven placement</p>
+        <p>Packages at this scale carry several hundred components whose positions are constrained by power delivery, signal integrity, and assembly rules. I developed a CAD tool that places them automatically, applying the electrical and packaging requirements specific to each module during placement instead of checking them afterwards, which reduces the number of manual design iterations and improves the resulting design metrics.</p>
+        <p class="cite">Developed during a package design internship at Apple.</p>
+      </div>
+    </div>
+
+    <div class="row res" id="r-cis">
+      <p class="label" style="margin:4px 0 0">Near-sensor compute</p>
+      <div>
+        <h3>System and thermal analysis of 3D-stacked image sensors</h3>
+        <p class="tags">Cu–Cu hybrid bonding · IWO-FET memory · global shutter · QDTrack</p>
+        <p>Heterogeneous 3D integration of photodiodes with IWO-FET buffer memory and near-pixel compute circuits, using Cu–Cu hybrid bonding to obtain global-shutter operation with temporal frame filtering at the sensor. Companion studies compare 2.5D and 3D integration of the sensor with a sparsity-aware accelerator for ResNet-50-based QDTrack inference, model the package in ANSYS Mechanical to establish the peak temperature each option reaches, and quantify how in-pixel circuit non-idealities propagate into multi-object tracking accuracy.</p>
+        <p class="cite">IEEE TCAS-I, vol. 70, no. 5, 2023; IEEE J-EDS, vol. 12, 2024; EDTM 2023; MWSCAS 2024.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPERIENCE ============ -->
+<section id="experience">
+  <div class="wrap">
+    <h2 class="sec-title">Experience</h2>
+
+    <div class="row entry">
+      <div class="when">Feb 2026 – present<span class="org">Apple</span></div>
+      <div>
+        <h3>Package Design</h3>
+        <p class="place">Cupertino, California</p>
+        <ul>
+          <li>Design advanced packages and CAD flow improvement.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row entry">
+      <div class="when">May – Aug 2025<span class="org">Apple</span></div>
+      <div>
+        <h3>Package Design Intern</h3>
+        <p class="place">Cupertino, California</p>
+        <ul>
+          <li>Developed a CAD automation tool for component auto-placement in packages with more than 300 components.</li>
+          <li>Encoded the electrical and packaging requirements specific to each module into the placement stage.</li>
+          <li>Reduced manual design effort and improved overall design metrics.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row entry">
+      <div class="when">May – Aug 2024<span class="org">Intel Corporation</span></div>
+      <div>
+        <h3>Advanced Package Research Engineer, Intern</h3>
+        <p class="place">Chandler, Arizona</p>
+        <ul>
+          <li>Evaluated hardware accelerators for LLMs across advanced packaging options, including 2.5D and 3D integration.</li>
+          <li>Performed system-technology co-optimization across packaging schemes for the Llama 2-13B model.</li>
+          <li>Integrated an optimization algorithm to determine the optimal dataflow for a given LLM architecture and set of hardware constraints under each package configuration.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row entry">
+      <div class="when">Jan 2021 – May 2026<span class="org">Georgia Tech</span></div>
+      <div>
+        <h3>Graduate Research Assistant</h3>
+        <p class="place">Prof. Shimeng Yu, School of Electrical and Computer Engineering</p>
+        <ul>
+          <li>Modeling and co-design of LLM accelerators using 3D stackable DRAM and heterogeneous integration of logic and memory; extended to a cluster evaluation with co-packaged optical interconnects.</li>
+          <li>Joint power delivery and thermal analysis of 3D stacked HBM with compute accelerators.</li>
+          <li>Design and thermal analysis of a 3D-stacked CMOS image sensor for multi-object tracking in autonomous driving, modeled end to end in ANSYS Mechanical.</li>
+          <li>Work carried out in part under the SRC CHIMES center and the SRC Research Scholars Program.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row entry">
+      <div class="when">Sep – Dec 2021<span class="org">Georgia Tech</span></div>
+      <div>
+        <h3>Graduate Teaching Assistant</h3>
+        <p class="place">ECE 3150, VLSI Design — Prof. Nivedita Bhattacharya</p>
+        <ul><li>Graded coursework and supported students on design projects.</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PUBLICATIONS ============ -->
+<section id="publications">
+  <div class="wrap">
+    <h2 class="sec-title">Publications</h2>
+
+    <div class="pubgroup">
+      <h3>Journal articles — first author</h3>
+      <ol class="pubs">
+        <li><div><span class="me">J. Sharda</span>, M. Manley, J. Kwak, C. Park, M. S. Bakir, S. Yu, "3-D stacked HBM and compute accelerators for LLM: Optimizing thermal management and power delivery efficiency," <em>IEEE Journal on Exploratory Solid-State Computational Devices and Circuits</em>, vol. 11, pp. 116–122, 2025.</div></li>
+        <li><div><span class="me">J. Sharda</span>, P.-K. Hsu, S. Yu, "Training trillion-parameter LLMs with 3D DRAM-based accelerator and co-packaged optical interconnects," <em>IEEE Transactions on Components, Packaging and Manufacturing Technology</em>, vol. 15, no. 11, pp. 2282–2289, 2025.</div></li>
+        <li><div><span class="me">J. Sharda</span>, S. Yu, "System-technology co-optimization methodology for LLM accelerators with advanced packaging," <em>IEEE Journal on Emerging and Selected Topics in Circuits and Systems</em>, vol. 15, no. 4, pp. 577–584, 2025.</div></li>
+        <li><div><span class="me">J. Sharda</span>, M. Manley, A. Kaul, W. Li, M. S. Bakir, S. Yu, "Design and thermal analysis of 2.5D and 3D integrated system of a CMOS image sensor and a sparsity-aware accelerator for autonomous driving," <em>IEEE Journal of the Electron Devices Society</em>, vol. 12, pp. 426–432, 2024.</div></li>
+        <li><div><span class="me">J. Sharda</span>, W. Li, Q. Wu, S. Chang, S. Yu, "Temporal frame filtering for autonomous driving using 3D-stacked global shutter CIS with IWO buffer memory and near-pixel compute," <em>IEEE Transactions on Circuits and Systems I: Regular Papers</em>, vol. 70, no. 5, pp. 2074–2084, 2023.</div></li>
+      </ol>
+    </div>
+
+    <div class="pubgroup">
+      <h3>Journal articles — co-author</h3>
+      <ol class="pubs">
+        <li><div>W.-H. Huang, <span class="me">J. Sharda</span>, C.-J. Shih, Y. Kong, F. G. Waqar, P.-J. Chen, Y. Lin, S. Yu, "A3D-MoE: Acceleration of large language models with mixture of experts via 3D heterogeneous integration," <em>IEEE Journal on Exploratory Solid-State Computational Devices and Circuits</em>, accepted.</div></li>
+        <li><div>K. Lee, S. Cho, P.-K. Hsu, <span class="me">J. Sharda</span>, S. Datta, S. Yu, "Monolithically stackable 1T1C 3D DRAM: A technical survey," <em>IEEE Transactions on Electron Devices</em>, vol. 73, no. 3, pp. 1092–1112, 2026. <span class="tag">Invited review</span></div></li>
+        <li><div>P.-K. Hsu, <span class="me">J. Sharda</span>, X. Wu, H.-S. P. Wong, S. Yu, "Monolithic 3D stackable DRAM: An enabling technology for large language model acceleration," <em>IEEE Nanotechnology Magazine</em>, vol. 19, no. 2, pp. 7–16, 2025.</div></li>
+        <li><div>Y.-C. Luo, A. Lu, <span class="me">J. Sharda</span>, M. Scherer, J. T. Gomez, S. S. Sarwar, Z. Li, R. F. Pinkham, B. De Salvo, S. Yu, "Thermally-constrained co-design of heterogeneous 3D integration of compute-in-memory, digital ML accelerator, and RISC-V cores for mixed ML and non-ML workloads," <em>IEEE Transactions on VLSI Systems</em>, vol. 32, no. 9, pp. 1718–1725, 2024.</div></li>
+        <li><div>D. Kaushik, <span class="me">J. Sharda</span>, D. Bhowmik, "Synapse cell optimization and back-propagation algorithm implementation in a domain wall synapse based crossbar neural network for scalable on-chip learning," <em>Nanotechnology</em>, vol. 31, no. 36, 364004, 2020.</div></li>
+      </ol>
+    </div>
+
+    <div class="pubgroup">
+      <h3>Conference papers</h3>
+      <ol class="pubs">
+        <li><div>P.-J. Chen, <span class="me">J. Sharda</span>, P.-K. Hsu, M. G. Park, S.-K. Lim, M. S. Bakir, S. Yu, "3D stacked GPU architecture with ultra-thin 3D DRAM dies and voltage regulators embedded into glass substrate," <em>IEEE Electronic Components and Technology Conference (ECTC)</em>, 2026.</div></li>
+        <li><div>Y. Pan, Z. Xia, P.-K. Hsu, L. Hu, H. Kim, <span class="me">J. Sharda</span>, M. Zhou, N. Kim, S. Yu, T. Rosing, M. Kang, "Stratum: System-hardware co-design with tiered monolithic 3D-stackable DRAM for efficient MoE serving," <em>ACM/IEEE International Symposium on Microarchitecture (MICRO)</em>, 2025.</div></li>
+        <li><div>S. Yoon, <span class="me">J. Sharda</span>, O. Phadke, S. Yu, "A CMOS image sensor pixel readout circuit design using back-end-of-line compatible oxide transistors," <em>IEEE International Midwest Symposium on Circuits and Systems (MWSCAS)</em>, 2025. <span class="tag">Best paper award</span></div></li>
+        <li><div>J. Kwak, J. Shin, S. Deng, G. Jeong, <span class="me">J. Sharda</span>, S. Datta, S. Yu, "Bias temperature instability analysis of oxide power transistors for BEOL on-chip voltage converter in thermally-constrained H3D systems," <em>IEEE International Electron Devices Meeting (IEDM)</em>, 2024.</div></li>
+        <li><div><span class="me">J. Sharda</span>, P.-K. Hsu, S. Yu, "Accelerator design using 3D stacked capacitorless DRAM for large language models," <em>IEEE International Conference on Artificial Intelligence Circuits and Systems (AICAS)</em>, 2024.</div></li>
+        <li><div><span class="me">J. Sharda</span>, Q. Wu, S. Chang, S. Yu, "Impact of in-pixel processing circuit non-idealities on multi-object tracking accuracy for autonomous driving," <em>IEEE International Midwest Symposium on Circuits and Systems (MWSCAS)</em>, 2024.</div></li>
+        <li><div><span class="me">J. Sharda</span>, M. Manley, A. Kaul, W. Li, M. S. Bakir, S. Yu, "Thermal modeling of 2.5D integrated package of CMOS image sensor and FPGA for autonomous driving," <em>IEEE Electron Devices Technology and Manufacturing Conference (EDTM)</em>, 2023.</div></li>
+        <li><div><span class="me">J. Sharda</span> et al., "A crossbar array of analog-digital-hybrid volatile memory synapse cells for energy-efficient on-chip learning," <em>IEEE International Symposium on Circuits and Systems (ISCAS)</em>, 2021.</div></li>
+      </ol>
+    </div>
+
+    <p class="note">Complete list on <a href="https://scholar.google.com/citations?user=1uoFY1QAAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a>.</p>
+  </div>
+</section>
+
+<!-- ============ BACKGROUND ============ -->
+<section id="background">
+  <div class="wrap">
+    <h2 class="sec-title">Background</h2>
+
+    <div class="row">
+      <p class="label" style="margin:4px 0 0">Education</p>
+      <div>
+        <dl class="kv">
+          <dt>Ph.D., Electrical and Computer Engineering</dt>
+          <dd>Georgia Institute of Technology, Atlanta — awarded 2026<br>
+              Advisor: Prof. Shimeng Yu<br>
+              Thesis: <em>Electrical–Thermal Co-Design and System-Level Analysis of Advanced Packaging Solutions for Hardware Accelerators and Sensor Technologies</em></dd>
+          <dt>B.Tech., Electrical Engineering</dt>
+          <dd>Indian Institute of Technology Delhi — 2017 to 2021, CGPA 9.03/10</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="row">
+      <p class="label" style="margin:4px 0 0">Technical skills</p>
+      <div class="cols">
+        <div>
+          <dl class="kv"><dt>Languages</dt></dl>
+          <ul class="plain"><li>C / C++</li><li>Python</li><li>MATLAB</li><li>Java</li><li>Verilog HDL</li><li>Assembly (SimpleRisc)</li></ul>
+        </div>
+        <div>
+          <dl class="kv"><dt>Design tools</dt></dl>
+          <ul class="plain"><li>Cadence Virtuoso</li><li>Cadence Allegro</li><li>SUPREM</li></ul>
+        </div>
+        <div>
+          <dl class="kv"><dt>Analysis and simulation</dt></dl>
+          <ul class="plain"><li>Ansys Mechanical APDL</li><li>Ansys HFSS</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <p class="label" style="margin:4px 0 0">Selected coursework</p>
+      <div>
+        <dl class="kv">
+          <dt>Devices, circuits and packaging</dt>
+          <dd>Microelectronic System Packaging (ECE 6776) · Analog Integrated System Design (ECE 6414) · Memory Devices and Technology (ECE 8803) · Advanced VLSI Systems (ECE 6130) · IC Fabrication Laboratory (ECE 4452)</dd>
+          <dt>Machine learning and systems</dt>
+          <dd>Hardware for Machine Learning (ECE 8803) · Systems for Machine Learning (CS 8803) · Generative and Geometric Deep Learning (ECE 8803) · Advanced Machine Learning (ELL 888) · Mathematical Foundations for Machine Learning (ECE 7750) · Probability and Stochastic Processes (MTL 106)</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="row">
+      <p class="label" style="margin:4px 0 0">Awards</p>
+      <div>
+        <ul class="bul">
+          <li>Nominated by industry sponsors for the SRC Rama D. Technical Excellence Award.</li>
+          <li>Best paper award, IEEE MWSCAS 2025, as co-author.</li>
+          <li>Best Bachelor's thesis award, Department of Electrical Engineering, IIT Delhi, for a compute-in-memory based hardware accelerator.</li>
+          <li>Summer Undergraduate Research Award, IIT Delhi, under Prof. Debanjan Bhowmik.</li>
+          <li>Semester Merit Award, IIT Delhi, in both semesters of 2017–18 (top 7% of students).</li>
+          <li>All India Rank 410 in JEE Advanced 2017, among 200,000 candidates; top 0.01% in JEE Main 2017 among 2 million candidates.</li>
+          <li>All India Rank 126 in the KVPY examination, Indian Institute of Science, Bangalore.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="row">
+      <p class="label" style="margin:4px 0 0">Contact</p>
+      <div>
+        <p>Happy to talk about advanced packaging, package-level electrical and thermal analysis, or system-level evaluation of machine learning hardware.</p>
+        <p class="links">
+          <a href="mailto:shardajanak@gmail.com">shardajanak@gmail.com</a><br>
+          <a href="https://scholar.google.com/citations?user=1uoFY1QAAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a><br>
+          <a href="https://www.linkedin.com/in/janak-sharda/" target="_blank" rel="noopener">LinkedIn</a><br>
+          <a href="https://github.com/YOUR_HANDLE" target="_blank" rel="noopener">GitHub</a>
+        </p>
+      </div>
+    </div>
+    <p class="colophon">Janak Sharda · Last updated August 2026</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var LAYERS = {
+    interposer: {
+      kicker: "Silicon interposer",
+      title: "Partitioning decided by analysis, not convention",
+      body: "How the accelerator is split across dies fixes the bandwidth, parasitics, and area available to it. This methodology evaluates 2.5D and 3D options, propagates package-level quantities into system power, performance, and area, and pairs the model with a dataflow optimizer for a given architecture and constraint set.",
+      facts: [["Method","Design-space exploration"],["Published","IEEE JETCAS, 2025"],["Workload","Llama 2-13B"]],
+      link: "#r-interposer"
+    },
+    logic: {
+      kicker: "Logic die",
+      title: "Compression and dataflow evaluated with the hardware",
+      body: "Compression and mapping are modeled jointly with the datapath that executes them rather than treated as separate post-training steps. The comparison is on energy, area, and achievable throughput across the resulting design points.",
+      facts: [["Method","Co-design modeling"],["Metrics","Energy, area, throughput"],["Scope","Transformer and MoE inference"]],
+      link: "#r-logic"
+    },
+    dram: {
+      kicker: "Stacked memory",
+      title: "Where memory sits, and what it costs",
+      body: "Transformer inference is bounded by memory bandwidth more often than by arithmetic, so memory placement is a system question. I modeled 3D stackable and capacitorless DRAM integrated over the logic die and compared against off-package alternatives on bandwidth per unit area, energy, and the thermal load it adds to the stack.",
+      facts: [["Memory","3D stackable DRAM, HBM"],["Integration","Logic–memory, heterogeneous"],["Venues","AICAS, MICRO, JXCDC"]],
+      link: "#r-logic"
+    },
+    optics: {
+      kicker: "Optical interface",
+      title: "Optical links assessed with their package costs",
+      body: "Electrical interconnects limit reach and energy per bit as accelerator counts grow. Moving the optical engine into the package addresses both, but adds escape routing and thermal coupling. I evaluated the configuration at cluster scale with those costs included rather than assuming an ideal link.",
+      facts: [["Published","IEEE T-CPMT, 2025"],["Scope","Cluster-scale training"],["Accounts for","Escape routing, thermal coupling"]],
+      link: "#r-optics"
+    },
+    thermal: {
+      kicker: "Thermal path",
+      title: "The constraint every layer below shares",
+      body: "Power dissipated anywhere in the stack leaves through one path, so peak temperature bounds what the rest of the design can do. I modeled complete stacks in ANSYS Mechanical and used the results to select per-block operating points and cooling configuration under a temperature limit.",
+      facts: [["Method","Finite-element analysis"],["Tool","ANSYS Mechanical APDL"],["Published","IEEE T-VLSI, 2024"]],
+      link: "#r-thermal"
+    },
+    power: {
+      kicker: "Power delivery",
+      title: "Delivery and cooling compete for the same vertical space",
+      body: "Current reaches the logic die through the board, the BGA field, the substrate planes, the interposer, and the vias between them, each adding resistance and inductance. In a 3D stack that path competes with the thermal path for the same vertical resources, so I evaluated delivery efficiency, IR drop, and peak temperature together rather than in sequence.",
+      facts: [["Published","IEEE JXCDC, 2025"],["Analyzed","IR drop, PDN efficiency"],["Related","Glass-substrate regulators, ECTC 2026"]],
+      link: "#r-power"
+    },
+    substrate: {
+      kicker: "Package substrate",
+      title: "Constraints applied during placement",
+      body: "Several hundred components have positions constrained by power delivery, signal integrity, and assembly rules. The CAD tool I developed applies each module's electrical and packaging requirements while placing, rather than checking them afterwards, which removes manual iterations from the loop.",
+      facts: [["Context","Apple"],["Components","More than 300"],["Method","Constraint-driven placement"]],
+      link: "#r-substrate"
+    }
+  };
+
+  var DEFAULT = {
+    kicker: "Overview",
+    title: "Seven layers, seven sets of constraints",
+    body: "Each layer of the package constrains the system differently: routing and placement at the substrate, impedance and IR drop along the power delivery path, partitioning and bandwidth at the interposer, energy per bit at the optical interface, and heat removal through the lid. The analysis is mostly about quantifying these effects together, since a change at one layer usually shows up as a limit at another."
+  };
+
+  var svg = document.getElementById("xsec");
+  if (!svg) return;
+  var groups = Array.prototype.slice.call(svg.querySelectorAll(".layer"));
+  var chips  = Array.prototype.slice.call(document.querySelectorAll(".picker .chip"));
+  var kicker = document.getElementById("rKicker"),
+      title  = document.getElementById("rTitle"),
+      body   = document.getElementById("rBody"),
+      facts  = document.getElementById("rFacts"),
+      link   = document.getElementById("rLink");
+  var active = null;
+
+  function render(key){
+    var d = key ? LAYERS[key] : DEFAULT;
+    kicker.textContent = d.kicker;
+    title.textContent  = d.title;
+    body.textContent   = d.body;
+    facts.innerHTML = "";
+    if (key) {
+      d.facts.forEach(function(f){
+        var w  = document.createElement("div");
+        var dt = document.createElement("dt"); dt.textContent = f[0];
+        var dd = document.createElement("dd"); dd.textContent = f[1];
+        w.appendChild(dt); w.appendChild(dd); facts.appendChild(w);
+      });
+      link.href = d.link; link.hidden = false;
+    } else {
+      link.hidden = true;
+    }
+    svg.classList.toggle("has-sel", !!key);
+    groups.forEach(function(g){ g.classList.toggle("on", g.dataset.key === key); });
+    chips.forEach(function(c){
+      if (c.dataset.key === key) c.setAttribute("aria-current","true");
+      else c.removeAttribute("aria-current");
+    });
+  }
+
+  function select(key){
+    active = (active === key) ? null : key;
+    render(active);
+  }
+
+  groups.forEach(function(g){
+    g.addEventListener("click", function(){ select(g.dataset.key); });
+    g.addEventListener("keydown", function(e){
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(g.dataset.key); }
+      if (e.key === "Escape") { active = null; render(null); }
+    });
+  });
+
+  chips.forEach(function(c){
+    c.addEventListener("click", function(e){ e.preventDefault(); select(c.dataset.key); });
+  });
+})();
+</script>
+</body>
+</html>
